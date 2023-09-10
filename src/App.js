@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense, lazy } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Counter from "./component/Counter";
+import Memo from "./component/Memo";
+import ParentComponent from "./component/parent";
+import CounterOne from "./component/customHooks/CounterOne";
+import CounterTwo from "./component/customHooks/CounterTwo";
+import CustomHooks from "./component/customHooks";
+import ComA from "./component/urlParams/ComA";
+import ComB from "./component/urlParams/ComB";
+import ComD from "./component/ContextApi/ComD";
+import ComC, { DataContext } from "./component/ContextApi/ComC";
 
-function App() {
+const Form = lazy(() => import("./component/Form"));
+const EffectExample = lazy(() => import("./component/EffectExample"));
+
+const App = () => {
+  const contextValue = "Hello from Context";
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <DataContext.Provider value={contextValue}>
+        <div>
+          <Counter />
+          <Suspense fallback={<div>Please Wait... Your Form is loading</div>}>
+            <Form />
+          </Suspense>
+          <Suspense
+            fallback={<div>Please Wait... Your EffectExample is loading</div>}
+          >
+            <EffectExample />
+          </Suspense>
+          <Memo />
+          <ParentComponent />
+          <CounterOne />
+          <CounterTwo />
+          <CustomHooks />
+        </div>
+        <Routes>
+          <Route path="/" element={<ComA />} />
+          <Route path="/ComB/:data" element={<ComB />} />
+          <Route path="/ComC" element={<ComC />} />
+          <Route path="/ComD" element={<ComD />} />
+        </Routes>
+      </DataContext.Provider>
+    </Router>
   );
-}
+};
 
 export default App;
